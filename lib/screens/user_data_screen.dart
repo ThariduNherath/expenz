@@ -1,5 +1,7 @@
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/constants/constants.dart';
+import 'package:expenz/screens/main_screen.dart';
+import 'package:expenz/services/user_service.dart';
 import 'package:expenz/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -188,7 +190,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                      // Sunmit button
 
                      GestureDetector(
-                      onTap: () {
+                      onTap: ()async {
                         
                         if(_formKey.currentState!.validate()) {
                           // form is valid, proceed further
@@ -196,10 +198,26 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           String email = _emailController.text;
                           String password = _passwordController.text;
                           String confirmPassword = _confirmPasswordController.text;
-                          print("User Name: $userName");
-                          print("Email: $email");
-                          print("Password: $password");
-                          print("Confirm Password: $confirmPassword");
+                          
+                          // save the user name and email in the device storage
+
+                           await UserService.storeUserDetails(
+                            userName: userName,
+                            email: email,
+                            password: password,
+                            confirmPassword: confirmPassword,
+                            context: context,
+                           );
+
+                           // navigate to the main screen
+
+                           if(context.mounted) {
+                             Navigator.push(context, MaterialPageRoute(builder: (context){
+
+                              return const MainScreen();
+                            }));
+                           }
+
 
                         }
                       },
