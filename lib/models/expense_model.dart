@@ -16,15 +16,13 @@ final Map<ExpenseCategory, String> expenseCategoryImages = {
 
 // category colors
 
-
 final Map<ExpenseCategory, Color> expenseCategoryColor = {
-   ExpenseCategory.food: const Color(0xFFE57373),
+  ExpenseCategory.food: const Color(0xFFE57373),
   ExpenseCategory.transport: const Color(0xFF81C784),
   ExpenseCategory.health: const Color(0xFF64B5F6),
   ExpenseCategory.shopping: const Color(0xFFFFD54F),
   ExpenseCategory.subscription: const Color(0xFF9575CD),
 };
-
 
 //model
 
@@ -46,4 +44,31 @@ class ExpenseModel {
     required this.time,
     required this.description,
   });
+
+  // convert the expence object to a jsin object
+
+  Map<String, dynamic> toJSON() {
+    return {
+      'id': id,
+      'title': amount,
+      'amount': amount,
+      'catogory': category.index,
+      'date': date.toIso8601String(),
+      'time': time.toIso8601String(),
+      'description': description,
+    };
+  }
+
+  //Create and expence object from a json object
+  factory ExpenseModel.fromJSON(Map<String, dynamic> json) {
+    return ExpenseModel(
+      id: json['id'],
+      title: json['title'],
+      amount: json['amount'],
+      category: ExpenseCategory.values[json['catogory']],
+      date: DateTime.parse(json['date']),
+      time: DateTime.parse(json['time']),
+      description: json['description'],
+    );
+  }
 }
