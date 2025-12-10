@@ -3,6 +3,7 @@ import 'package:expenz/constants/constants.dart';
 import 'package:expenz/models/expense_model.dart';
 import 'package:expenz/models/income_model.dart';
 import 'package:expenz/services/expence_service.dart';
+import 'package:expenz/services/income_service.dart';
 import 'package:expenz/widgets/custom_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,12 @@ import 'package:intl/intl.dart';
 
 class AddNewScreen extends StatefulWidget {
   final Function(ExpenseModel) addExpense;
-  const AddNewScreen({super.key, required this.addExpense});
+  final Function(Income) addIncome;
+  const AddNewScreen({
+    super.key,
+    required this.addExpense,
+    required this.addIncome,
+  });
 
   @override
   State<AddNewScreen> createState() => _AddNewScreenState();
@@ -414,25 +420,55 @@ class _AddNewScreenState extends State<AddNewScreen> {
                         GestureDetector(
                           onTap: () async {
                             // save the expence or the income data
-                            List<ExpenseModel> loadedExpenses =
-                                await ExpenceService().loadExpenses();
-                            // create the expense to store
 
-                            ExpenseModel expense = ExpenseModel(
-                              id: loadedExpenses.length + 1,
-                              title: _titleController.text,
-                              amount: _amountController.text.isEmpty
-                                  ? 0
-                                  : double.parse(_amountController.text),
-                              category: _expenseCategory,
-                              date: _selectedDate,
-                              time: _selectedTime,
-                              description: _decriptionController.text,
-                            );
+                            if (_selectedMethod == 0) {
+                              List<ExpenseModel> loadedExpenses =
+                                  await ExpenceService().loadExpenses();
+                              // create the expense to store
 
-                            //add expense
+                              ExpenseModel expense = ExpenseModel(
+                                id: loadedExpenses.length + 1,
+                                title: _titleController.text,
+                                amount: _amountController.text.isEmpty
+                                    ? 0
+                                    : double.parse(_amountController.text),
+                                category: _expenseCategory,
+                                date: _selectedDate,
+                                time: _selectedTime,
+                                description: _decriptionController.text,
+                              );
 
-                            widget.addExpense(expense);
+                              //add expense
+
+                              widget.addExpense(expense);
+
+                              //clear the deilds
+
+                              _titleController.clear();
+                              _amountController.clear();
+                              _decriptionController.clear();
+                            } else {
+                              // load incomes
+
+                              List<Income> loadedIncomes = await IncomeService()
+                                  .loadIncomes();
+                              // create a new income
+                              Income income = Income(
+                                id: loadedIncomes.length + 1,
+                                title: _titleController.text,
+                                amount: _amountController.text.isEmpty
+                                    ? 0
+                                    : double.parse(_amountController.text),
+                                date: _selectedDate,
+                                category: _incomeCategory,
+                                time: _selectedTime,
+                                description: _decriptionController.text,
+                              );
+                              widget.addIncome(income);
+                               _titleController.clear();
+                              _amountController.clear();
+                              _decriptionController.clear();
+                            }
                           },
                           child: CustomButton(
                             buttonName: "Add",

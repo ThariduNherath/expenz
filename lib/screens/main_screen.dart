@@ -1,11 +1,13 @@
 import 'package:expenz/constants/colors.dart';
 import 'package:expenz/models/expense_model.dart';
+import 'package:expenz/models/income_model.dart';
 import 'package:expenz/screens/add_new_screens.dart';
 import 'package:expenz/screens/budget_screen.dart';
 import 'package:expenz/screens/home_screen.dart';
 import 'package:expenz/screens/profile_screen.dart';
 import 'package:expenz/screens/transactions_screen.dart';
 import 'package:expenz/services/expence_service.dart';
+import 'package:expenz/services/income_service.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
@@ -21,6 +23,8 @@ class _MainScreenState extends State<MainScreen> {
   int _currentPageIndex = 0;
   List<ExpenseModel> expenseList = [];
 
+  List<Income> income = [];
+
   // function to fetch expenses
   void fetchAllExpenses() async {
     List<ExpenseModel> loadedExpenses = await ExpenceService().loadExpenses();
@@ -28,6 +32,16 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       expenseList = loadedExpenses;
       print(expenseList.length);
+    });
+  }
+
+  // funtion to fetch all incomes
+  void fetchAllIncomes() async {
+    List<Income> loadedIncomes = await IncomeService().loadIncomes();
+
+    setState(() {
+      income = loadedIncomes;
+      print(income.length);
     });
   }
 
@@ -40,6 +54,19 @@ class _MainScreenState extends State<MainScreen> {
 
     setState(() {
       expenseList.add(newExpense);
+      fetchAllIncomes();
+    });
+  }
+
+  // function to add new income
+
+  void addNewIncome(Income newIncome) {
+    IncomeService().saveIncome(newIncome, context);
+
+    //updated the income  list
+    setState(() {
+      income.add(newIncome);
+      print(income.length);
     });
   }
 
@@ -48,6 +75,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
 
     fetchAllExpenses();
+    fetchAllIncomes();
   }
 
   @override
@@ -57,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
     final List<Widget> pages = [
       HomeScreen(),
       TransactionsScreen(),
-      AddNewScreen(addExpense: addNewExpense),
+      AddNewScreen(addExpense: addNewExpense, addIncome: addNewIncome),
       BudgetScreen(),
       ProfileScreen(),
     ];
