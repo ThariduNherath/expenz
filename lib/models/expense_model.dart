@@ -7,7 +7,7 @@ enum ExpenseCategory { food, transport, health, shopping, subscription }
 // category images
 
 final Map<ExpenseCategory, String> expenseCategoryImages = {
-  ExpenseCategory.food: "aassets/images/restaurant.png",
+  ExpenseCategory.food: "assets/images/restaurant.png",
   ExpenseCategory.transport: "assets/images/car.png",
   ExpenseCategory.health: "assets/images/health.png",
   ExpenseCategory.shopping: "assets/images/bag.png",
