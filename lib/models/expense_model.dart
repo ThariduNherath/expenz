@@ -24,8 +24,6 @@ final Map<ExpenseCategory, Color> expenseCategoryColor = {
   ExpenseCategory.subscription: const Color(0xFF9575CD),
 };
 
-//model
-
 class ExpenseModel {
   final int id;
   final String title;
@@ -45,30 +43,34 @@ class ExpenseModel {
     required this.description,
   });
 
-  // convert the expence object to a jsin object
-
+  // Convert model to JSON
   Map<String, dynamic> toJSON() {
     return {
       'id': id,
-      'title': amount,
+      'title': title,
       'amount': amount,
-      'catogory': category.index,
+      'category': category.index,
       'date': date.toIso8601String(),
       'time': time.toIso8601String(),
       'description': description,
     };
   }
 
-  //Create and expence object from a json object
+  // Convert JSON to model safely
   factory ExpenseModel.fromJSON(Map<String, dynamic> json) {
     return ExpenseModel(
-      id: json['id'],
-      title: json['title'],
-      amount: json['amount'],
-      category: ExpenseCategory.values[json['catogory']],
-      date: DateTime.parse(json['date']),
-      time: DateTime.parse(json['time']),
-      description: json['description'],
+      id: json['id'] ?? 0,
+      title: json['title']?.toString() ?? "",
+      amount: (json['amount'] is String)
+          ? double.tryParse(json['amount']) ?? 0
+          : (json['amount'] as num).toDouble(),
+      category: ExpenseCategory.values[json['category'] ?? 0],
+      date: DateTime.tryParse(json['date'] ?? "") ?? DateTime.now(),
+      time: DateTime.tryParse(json['time'] ?? "") ?? DateTime.now(),
+      description: json['description']?.toString() ?? "",
     );
   }
 }
+
+
+
