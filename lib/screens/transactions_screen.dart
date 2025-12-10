@@ -10,7 +10,7 @@ class TransactionsScreen extends StatefulWidget {
   final List<ExpenseModel> expensesList;
   final List<Income> incomeList;
 
-  final void Function(ExpenseModel) onDismissedExpense;
+  final void Function(ExpenseModel) onDismissedExpense; 
   final void Function(Income) onDismissedIncome;
 
 
@@ -62,6 +62,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                        widget.expensesList.isEmpty 
+                        ? Text("No Expenses added yet, add some expenses to see here",
+                        style: TextStyle(fontSize: 16,color: kGrey),
+                        ):
+
+                    
                       ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
@@ -109,6 +115,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+
+                        widget.incomeList.isEmpty 
+                        ? Text("No Income added yet, add some expenses to see here",
+                        style: TextStyle(fontSize: 16,color: kGrey),
+                        ):
                       ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,

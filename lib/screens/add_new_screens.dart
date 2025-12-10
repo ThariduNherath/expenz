@@ -5,7 +5,6 @@ import 'package:expenz/models/income_model.dart';
 import 'package:expenz/services/expence_service.dart';
 import 'package:expenz/services/income_service.dart';
 import 'package:expenz/widgets/custom_button.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -287,17 +286,16 @@ class _AddNewScreenState extends State<AddNewScreen> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                // date picker function
                                 showDatePicker(
                                   context: context,
-                                  firstDate: DateTime(2020),
-                                  lastDate: DateTime(2025),
                                   initialDate:
-                                      DateTime.now().isAfter(
-                                        DateTime(2025),
-                                      ) // inline check
-                                      ? DateTime(2025)
-                                      : DateTime.now(),
+                                      DateTime.now(), // ✔️ default = today
+                                  firstDate: DateTime(
+                                    2000,
+                                  ), // ✔️ user can go back many years
+                                  lastDate: DateTime(
+                                    2100,
+                                  ), // ✔️ user can select any future year
                                 ).then((value) {
                                   if (value != null) {
                                     setState(() {
@@ -306,6 +304,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
                                   }
                                 });
                               },
+
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: kMainColor,
@@ -465,7 +464,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
                                 description: _decriptionController.text,
                               );
                               widget.addIncome(income);
-                               _titleController.clear();
+                              _titleController.clear();
                               _amountController.clear();
                               _decriptionController.clear();
                             }
