@@ -59,21 +59,68 @@ class IncomeService {
     }
   }
 
-  // load the income from shared prefrences
-
+  // load the income from shared preferences
   Future<List<Income>> loadIncomes() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    List<String>? existingIncomes = pref.getStringList(_incomeKey);
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      List<String>? existingIncomes = pref.getStringList(_incomeKey);
 
-    // convert the existing incomes to a list of income obejects
+      List<Income> loadedIncomes = [];
 
-    List<Income> loadedIncomes = [];
-    if (existingIncomes != null) {
-      loadedIncomes = existingIncomes
-          .map((e) => Income.fromJSON(json.decode(e)))
-          .toList();
+      if (existingIncomes != null) {
+        loadedIncomes = existingIncomes
+            .map((e) => Income.fromJSON(json.decode(e)))
+            .toList();
+      }
+
+      return loadedIncomes;
+    } catch (error) {
+      print("Error loading incomes: $error");
+      return [];
     }
+  }
 
-    return loadedIncomes;
+  // Function to delete an income
+  Future<void> deleteIncome(int id, BuildContext context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? existingIncomes = prefs.getStringList(_incomeKey);
+
+      List<Income> existingIncomeObjects = [];
+
+      if (existingIncomes != null) {
+        existingIncomeObjects = existingIncomes
+            .map((e) => Income.fromJSON(json.decode(e)))
+            .toList();
+      }
+
+      // remove income
+      existingIncomeObjects.removeWhere((income) => income.id == id);
+
+      // convert back to strings
+      List<String> updatedIncomes = existingIncomeObjects
+          .map((e) => json.encode(e.toJSON()))
+          .toList();
+
+      await prefs.setStringList(_incomeKey, updatedIncomes);
+
+      // show message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Income deleted successfully!"),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          
+          content: Text("Error Delelting Income!"),
+          duration: Duration(seconds: 2),
+          ));
+      }
+    }
   }
 }

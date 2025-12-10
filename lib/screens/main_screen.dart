@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentPageIndex = 0;
   List<ExpenseModel> expenseList = [];
 
-  List<Income> income = [];
+  List<Income> incomeList = [];
 
   // function to fetch expenses
   void fetchAllExpenses() async {
@@ -40,8 +40,8 @@ class _MainScreenState extends State<MainScreen> {
     List<Income> loadedIncomes = await IncomeService().loadIncomes();
 
     setState(() {
-      income = loadedIncomes;
-      print(income.length);
+      incomeList = loadedIncomes;
+      print(incomeList.length);
     });
   }
 
@@ -65,8 +65,8 @@ class _MainScreenState extends State<MainScreen> {
 
     //updated the income  list
     setState(() {
-      income.add(newIncome);
-      print(income.length);
+      incomeList.add(newIncome);
+      print(incomeList.length);
     });
   }
 
@@ -88,13 +88,28 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // function to remove a income
+
+  void removeIncome(Income income) {
+    IncomeService().deleteIncome(income.id, context);
+
+    setState(() {
+      incomeList.remove(income);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // screen list
 
     final List<Widget> pages = [
       HomeScreen(),
-      TransactionsScreen(expensesList: expenseList, onDismissedExpense: removeExpense,),
+      TransactionsScreen(
+        expensesList: expenseList,
+        incomeList: incomeList,
+        onDismissedExpense: removeExpense,
+        onDismissedIncome: removeIncome,
+      ),
       AddNewScreen(addExpense: addNewExpense, addIncome: addNewIncome),
       BudgetScreen(),
       ProfileScreen(),
