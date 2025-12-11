@@ -119,8 +119,7 @@ class ExpenceService {
       }
     } catch (error) {
       print(error.toString());
-      
-         
+
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -129,6 +128,40 @@ class ExpenceService {
           ),
         );
       }
+    }
+  }
+
+  // delete all exepnses from shared prefrences
+
+  Future<void> deleteAllExpenses(BuildContext context) async {
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      await pref.remove(_expenseKey);
+
+      // show massage
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("All Expenses Deleted"),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (error) {
+      
+
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error Deleting Expenses"),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+      
+
     }
   }
 }
