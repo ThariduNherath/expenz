@@ -73,6 +73,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           if (value!.isEmpty) {
                             return 'Please enter your name';
                           }
+                          return null;
                           
                         },
                         decoration: InputDecoration(
@@ -97,6 +98,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           if (value!.isEmpty) {
                             return 'Please enter your email';
                           }
+                          return null;
                           
                         },
                         decoration: InputDecoration(
@@ -118,6 +120,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           if (value!.isEmpty) {
                             return 'Please enter valid password';
                           }
+                          return null;
                           
                         },
                         obscureText: true,
@@ -139,6 +142,7 @@ class _UserDataScreenState extends State<UserDataScreen> {
                           if (value!.isEmpty) {
                             return 'Please enter the same password';
                           }
+                          return null;
                           
                         },
                         obscureText: true,

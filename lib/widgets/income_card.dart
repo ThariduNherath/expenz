@@ -46,7 +46,7 @@ class IncomeCard extends StatelessWidget {
             width: 60,
 
             decoration: BoxDecoration(
-              color: incomeCategoryColor[category]?.withOpacity(0.2)!,
+              color: incomeCategoryColor[category]?.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),
 

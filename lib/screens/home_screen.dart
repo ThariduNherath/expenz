@@ -2,7 +2,6 @@ import 'package:expenz/constants/colors.dart';
 import 'package:expenz/constants/constants.dart';
 import 'package:expenz/models/expense_model.dart';
 import 'package:expenz/models/income_model.dart';
-import 'package:expenz/screens/user_data_screen.dart';
 import 'package:expenz/services/user_service.dart';
 import 'package:expenz/widgets/Line_chart.dart';
 import 'package:expenz/widgets/expense_card.dart';
@@ -15,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 
   const HomeScreen({
     super.key,
-    required this.expenseList,
+    required this.expenseList,  
     required this.incomeList,
   });
 
@@ -43,14 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     setState(() {
-
       // total amount of expenses
       for (var i = 0; i < widget.expenseList.length; i++) {
         expenseTotal += widget.expenseList[i].amount;
       }
- 
+
       //total amount of incomes
-       for (var k = 0; k < widget.incomeList.length; k++) {
+      for (var k = 0; k < widget.incomeList.length; k++) {
         incomeTotal += widget.incomeList[k].amount;
       }
     });

@@ -18,95 +18,99 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  // current page index
-
   int _currentPageIndex = 0;
   List<ExpenseModel> expenseList = [];
-
   List<Income> incomeList = [];
-
-  // function to fetch expenses
-  void fetchAllExpenses() async {
-    List<ExpenseModel> loadedExpenses = await ExpenceService().loadExpenses();
-
-    setState(() {
-      expenseList = loadedExpenses;
-      print(expenseList.length);
-    });
-  }
-
-  // funtion to fetch all incomes
-  void fetchAllIncomes() async {
-    List<Income> loadedIncomes = await IncomeService().loadIncomes();
-
-    setState(() {
-      incomeList = loadedIncomes;
-      print(incomeList.length);
-    });
-  }
-
-  // funtion to add new expense
-
-  void addNewExpense(ExpenseModel newExpense) {
-    ExpenceService().saveExpenses(newExpense, context);
-
-    // update the list of expenses
-
-    setState(() {
-      expenseList.add(newExpense);
-      fetchAllIncomes();
-    });
-  }
-
-  // function to add new income
-
-  void addNewIncome(Income newIncome) {
-    IncomeService().saveIncome(newIncome, context);
-
-    //updated the income  list
-    setState(() {
-      incomeList.add(newIncome);
-      print(incomeList.length);
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-
     fetchAllExpenses();
     fetchAllIncomes();
   }
 
-  // function to remove expense
+  // Fetch all expenses
+  void fetchAllExpenses() async {
+    List<ExpenseModel> loadedExpenses = await ExpenceService().loadExpenses();
+    setState(() {
+      expenseList = loadedExpenses;
+      print("Expenses loaded: ${expenseList.length}");
+    });
+  }
 
+  // Fetch all incomes
+  void fetchAllIncomes() async {
+    List<Income> loadedIncomes = await IncomeService().loadIncomes();
+    setState(() {
+      incomeList = loadedIncomes;
+      print("Incomes loaded: ${incomeList.length}");
+    });
+  }
+
+  // Add new expense
+  void addNewExpense(ExpenseModel newExpense) {
+    ExpenceService().saveExpenses(newExpense, context);
+    setState(() {
+      expenseList.add(newExpense);
+    });
+  }
+
+  // Add new income
+  void addNewIncome(Income newIncome) {
+    IncomeService().saveIncome(newIncome, context);
+    setState(() {
+      incomeList.add(newIncome);
+    });
+  }
+
+  // Remove expense
   void removeExpense(ExpenseModel expense) {
     ExpenceService().deleteExpense(expense.id, context);
-
     setState(() {
       expenseList.remove(expense);
     });
   }
 
-  // function to remove a income
-
+  // Remove income
   void removeIncome(Income income) {
     IncomeService().deleteIncome(income.id, context);
-
     setState(() {
       incomeList.remove(income);
     });
   }
 
+  // Calculate total expenses per category
+  Map<ExpenseCategory, double> calculateExpenseCategories() {
+    Map<ExpenseCategory, double> categoryTotals = {
+      for (var cat in ExpenseCategory.values) cat: 0.0,
+    };
+
+    for (ExpenseModel expense in expenseList) {
+      categoryTotals[expense.category] =
+          (categoryTotals[expense.category] ?? 0) + expense.amount;
+    }
+
+    return categoryTotals;
+  }
+
+  // Calculate total incomes per category
+  Map<IncomeCategory, double> calculateIncomeCategories() {
+    Map<IncomeCategory, double> categoryTotals = {
+      for (var cat in IncomeCategory.values) cat: 0.0,
+    };
+
+    for (Income income in incomeList) {
+      categoryTotals[income.category] =
+          (categoryTotals[income.category] ?? 0) + income.amount;
+    }
+
+    return categoryTotals;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // screen list
-
     final List<Widget> pages = [
-      HomeScreen(
-
-        expenseList: expenseList, incomeList: incomeList,
-      ),
+      HomeScreen(expenseList: expenseList, incomeList: incomeList),
       TransactionsScreen(
         expensesList: expenseList,
         incomeList: incomeList,
@@ -114,9 +118,13 @@ class _MainScreenState extends State<MainScreen> {
         onDismissedIncome: removeIncome,
       ),
       AddNewScreen(addExpense: addNewExpense, addIncome: addNewIncome),
-      BudgetScreen(),
+      BudgetScreen(
+        expenseCatogoryTotals: calculateExpenseCategories(),
+        incomeCatogoryTotals: calculateIncomeCategories(),
+      ),
       ProfileScreen(),
     ];
+
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -129,34 +137,28 @@ class _MainScreenState extends State<MainScreen> {
             _currentPageIndex = index;
           });
         },
-
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 12,
         ),
-
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_rounded),
-            label: "Transactions",
-          ),
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          const BottomNavigationBarItem(icon: Icon(Icons.list_rounded), label: "Transactions"),
           BottomNavigationBarItem(
             icon: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
                 color: kMainColor,
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.add, color: kWhite, size: 30),
+              child: const Icon(Icons.add, color: kWhite, size: 30),
             ),
             label: "",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.rocket), label: "Budget"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          const BottomNavigationBarItem(icon: Icon(Icons.rocket), label: "Budget"),
+          const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
-
       body: pages[_currentPageIndex],
     );
   }
